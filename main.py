@@ -10,6 +10,8 @@ class Player:
 player1 = None
 player2 = None
 
+cont = 0
+
 window = tk.Tk()
 
 turn = tk.StringVar()
@@ -78,7 +80,7 @@ def verify():
         return f'{player2.name} won'
 
 def Play(button):
-    global cont, x_o, turn,player1,player2
+    global cont,turn,player1,player2
     global button_1_content, button_2_content, button_3_content, button_4_content, button_5_content, button_6_content, button_7_content, button_8_content, button_9_content
 
     if player1.name in turn.get():
@@ -101,7 +103,7 @@ def Play(button):
         elif button == 'b9':
             button_9_content.set(player1.icon)
 
-        turn.set(player2.name)
+        turn.set(f'{player2.name}, ({player2.icon})')
     elif player2.name in turn.get():
         if button == 'b1':
             button_1_content.set(player2.icon)
@@ -122,24 +124,32 @@ def Play(button):
         elif button == 'b9':
             button_9_content.set(player2.icon)
 
-        turn.set(player1.name)
+        turn.set(f'{player1.name}, ({player1.icon})')
 
+    cont+=1
 
     winner = verify()
     if winner != None:
         turn.set(winner)
         print(winner)
 
-def Start():
-    global turn,player1,player2
+    if cont==9 and winner==None:
+        turn.set('Nobody won')
 
-    player1 = Player(enter_player1.get(),'X')
-    player2 = Player(enter_player2.get(),'O')
+def Start():
+    global turn,player1,player2,window
+
+    window.geometry('300x300')
+
+    player1 = Player(enter_player1.get(),enter_player1_icon.get())
+    player2 = Player(enter_player2.get(),enter_player2_icon.get())
 
     enter_player1.grid_forget()
     enter_player1_text.grid_forget()
+    enter_player1_icon.grid_forget()
     enter_player2.grid_forget()
     enter_player2_text.grid_forget()
+    enter_player2_icon.grid_forget()
     start_game_button.grid_forget()
 
     rand = random.randint(1, 2)
@@ -152,31 +162,31 @@ def Start():
     turn_text = tk.Label(window, textvariable=turn, font=('Arial', 15))
     turn_text.grid(row=0, column=0, columnspan=3)
 
-    button1 = tk.Button(window, textvariable=button_1_content, command=lambda: Play('b1'), padx=10, pady=10)
+    button1 = tk.Button(window, textvariable=button_1_content, command=lambda: Play('b1'), padx=10, pady=10,font=('Arial',15))
     button1.grid(row=2, column=0, sticky='nsew')
 
-    button2 = tk.Button(window, textvariable=button_2_content, command=lambda: Play('b2'), padx=10, pady=10)
+    button2 = tk.Button(window, textvariable=button_2_content, command=lambda: Play('b2'), padx=10, pady=10,font=('Arial',15))
     button2.grid(row=2, column=1, sticky='nsew')
 
-    button3 = tk.Button(window, textvariable=button_3_content, command=lambda: Play('b3'), padx=10, pady=10)
+    button3 = tk.Button(window, textvariable=button_3_content, command=lambda: Play('b3'), padx=10, pady=10,font=('Arial',15))
     button3.grid(row=2, column=2, sticky='nsew')
 
-    button4 = tk.Button(window, textvariable=button_4_content, command=lambda: Play('b4'), padx=10, pady=10)
+    button4 = tk.Button(window, textvariable=button_4_content, command=lambda: Play('b4'), padx=10, pady=10,font=('Arial',15))
     button4.grid(row=3, column=0, sticky='nsew')
 
-    button5 = tk.Button(window, textvariable=button_5_content, command=lambda: Play('b5'), padx=10, pady=10)
+    button5 = tk.Button(window, textvariable=button_5_content, command=lambda: Play('b5'), padx=10, pady=10,font=('Arial',15))
     button5.grid(row=3, column=1, sticky='nsew')
 
-    button6 = tk.Button(window, textvariable=button_6_content, command=lambda: Play('b6'), padx=10, pady=10)
+    button6 = tk.Button(window, textvariable=button_6_content, command=lambda: Play('b6'), padx=10, pady=10,font=('Arial',15))
     button6.grid(row=3, column=2, sticky='nsew')
 
-    button7 = tk.Button(window, textvariable=button_7_content, command=lambda: Play('b7'), padx=10, pady=10)
+    button7 = tk.Button(window, textvariable=button_7_content, command=lambda: Play('b7'), padx=10, pady=10,font=('Arial',15))
     button7.grid(row=4, column=0, sticky='nsew')
 
-    button8 = tk.Button(window, textvariable=button_8_content, command=lambda: Play('b8'), padx=10, pady=10)
+    button8 = tk.Button(window, textvariable=button_8_content, command=lambda: Play('b8'), padx=10, pady=10,font=('Arial',15))
     button8.grid(row=4, column=1, sticky='nsew')
 
-    button9 = tk.Button(window, textvariable=button_9_content, command=lambda: Play('b9'), padx=10, pady=10)
+    button9 = tk.Button(window, textvariable=button_9_content, command=lambda: Play('b9'), padx=10, pady=10,font=('Arial',15))
     button9.grid(row=4, column=2, sticky='nsew')
 
 
@@ -187,17 +197,23 @@ for i in range(3):
 for i in range(5):
     window.rowconfigure(i, weight=1)
 
-enter_player1_text = tk.Label(window, text='First player name (X):')
+enter_player1_text = tk.Label(window, text='First player name (X):',font=('Arial',15))
 enter_player1_text.grid(row=0, column=0, sticky='w')
 enter_player1 = tk.Entry(window, font=('Arial', 15))
 enter_player1.grid(row=0, column=1, sticky='ew')
+enter_player1_icon = tk.Entry(window, font=('Arial', 15),width=5)
+enter_player1_icon.grid(row=0, column=2, sticky='ew')
+enter_player1_icon.insert(0,'X')
 
-enter_player2_text = tk.Label(window, text='Second player name (O):')
+enter_player2_text = tk.Label(window, text='Second player name (O):',font=('Arial',15))
 enter_player2_text.grid(row=1, column=0, sticky='w')
 enter_player2 = tk.Entry(window, font=('Arial', 15))
 enter_player2.grid(row=1, column=1, sticky='ew')
+enter_player2_icon = tk.Entry(window, font=('Arial', 15),width=5)
+enter_player2_icon.grid(row=1, column=2, sticky='ew')
+enter_player2_icon.insert(0,'O')
 
-start_game_button = tk.Button(window, text='Start game', command=Start)
+start_game_button = tk.Button(window, text='Start game', command=Start,font=('Arial',15))
 start_game_button.grid(row=2, column=0, columnspan=2)
 
 window.mainloop()
